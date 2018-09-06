@@ -1,18 +1,14 @@
 <template>
   <div class="calendar-warpper">
     <div>
-      <span class="calendar-time">{{year}}年{{month}}月</span>
-      <img src="@/resorce/img/file/home_btn_calendar_n@2x.png" alt="" class="calendar-icon">
+      <slot name="header">
+        <div class="calendar-time">{{year}}年{{month}}月</div>
+        <!-- <img src="@/resorce/img/file/home_btn_calendar_n@2x.png" alt="" class="calendar-icon"> -->
+      </slot>
     </div>
     <!-- <img src="@/resorce/img/file/calenda.png" alt="" width="100%;"> -->
     <ul class="calendar-list">
-      <li class="calendar-date">日</li>
-      <li class="calendar-date">一</li>
-      <li class="calendar-date">二</li>
-      <li class="calendar-date">三</li>
-      <li class="calendar-date">四</li>
-      <li class="calendar-date">五</li>
-      <li class="calendar-date">六</li>
+      <li class="calendar-date" v-for="item in weeks" :key="item">{{item}}</li>
       <v-touch
         tag="li"
         v-for="(item,index) in dataArray"
@@ -30,17 +26,36 @@
 export default {
   data () {
     return {
+      weeks: [],
       year: '',
       month: '',
       day: '',
       dataArray: []
     }
   },
+  props: {
+    defaultDate: {
+      type: [String, Array],
+      required: false
+    },
+    weeksType: {
+      type: String,
+      required: false,
+      default: 'CN'
+    }
+  },
   mounted () {
+    // 获取星期类别
+    this.getWeeks()
     // 获取初始化日期
     this.getToday()
   },
   methods: {
+    getWeeks () {
+      this.weeksType === 'CN'
+        ? this.weeks = ['日', '一', '二', '三', '四', '五', '六']
+        : this.weeks = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat']
+    },
     /**
      * 获取今日信息
      * @param year 年份
@@ -77,6 +92,7 @@ export default {
       let dataArray = []
       for (let i = 1; i <= currentDays; i++) {
         dataArray.push({
+          timestamp: new Date(this.year, this.month - 1, i),
           data: i,
           TPM: true // 是否本月 the present month
         })
@@ -90,6 +106,7 @@ export default {
       let dataArray = []
       for (let i = 0; i < preDay; i++) {
         dataArray.unshift({
+          timestamp: new Date(this.year, this.month - 2, currentDays),
           data: currentDays,
           TPM: false // 是否本月 the present month
         })
@@ -104,6 +121,7 @@ export default {
       let dataArray = []
       for (let i = 0; i < nextDay; i++) {
         dataArray.push({
+          timestamp: new Date(this.year, this.month, i + 1),
           data: i + 1,
           TPM: false // 是否本月 the present month
         })
@@ -151,12 +169,33 @@ export default {
         this.touchLeft()
         this.day = item.data
       }
+      this.$emit('dateChoose', item.timestamp)
     }
   }
 }
 </script>
 
 <style scoped>
+.calendar {
+  background-color: #fff;
+  border-top: 1px solid #F5F6FA;
+  border-bottom: 1px solid #F5F6FA;
+  padding: 18px;
+  position: relative;
+}
+.calendar-time {
+  font-size: 18px;
+  color: #333;
+  text-align: left;
+  padding-left: 18px;
+}
+.calendar-icon {
+  width: 18px;
+  height: 18px;
+  position: relative;
+  top: 2px;
+  margin-left: 8px;
+}
 .calendar-warpper {
   width: 100%;
   background-color: #fff;
@@ -165,6 +204,7 @@ export default {
   background-color: #fff;
   overflow: auto;
   margin-top: 10px;
+  padding: 0px;
 }
 .calendar-date {
   list-style: none;

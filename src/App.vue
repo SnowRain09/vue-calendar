@@ -1,13 +1,26 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+    <!-- <router-view/> -->
+    <calendar weeksType="EN" @dateChoose="getDate">
+    </calendar>
   </div>
 </template>
 
 <script>
+import calendar from './calendar'
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    calendar
+  },
+  data () {
+    return {}
+  },
+  methods: {
+    getDate (item) {
+      console.log(item)
+    }
+  }
 }
 </script>
 
