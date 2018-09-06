@@ -9,15 +9,9 @@
     <!-- <img src="@/resorce/img/file/calenda.png" alt="" width="100%;"> -->
     <ul class="calendar-list">
       <li class="calendar-date" v-for="item in weeks" :key="item">{{item}}</li>
-      <v-touch
-        tag="li"
-        v-for="(item,index) in dataArray"
-        :key="index"
-        class="calendar-date"
-        :class="{'calendar-date-present': item.TPM}"
-        @swipeleft="touchLeft"
-        @swiperight ="touchRight"
-      ><div :class="{'calendar-data-on': isToday(item) }" @click="chooseDay(item)">{{item.data}}</div></v-touch>
+      <v-touch tag="li" v-for="(item,index) in dataArray" :key="index" class="calendar-date" :class="{'calendar-date-present': item.TPM}" @swipeleft="touchLeft" @swiperight="touchRight">
+        <div :class="{'calendar-data-on': isToday(item) }" @click="chooseDay(item)">{{item.data}}</div>
+      </v-touch>
     </ul>
   </div>
 </template>
@@ -34,10 +28,12 @@ export default {
     }
   },
   props: {
+    // 默认选中日期 可以用时间戳或者Date格式 不写为当日
     defaultDate: {
-      type: [String, Array],
+      type: [String, Number],
       required: false
     },
+    // 星期的类别 CN为中文 EN为英文
     weeksType: {
       type: String,
       required: false,
@@ -62,9 +58,17 @@ export default {
      * @param month 月份 month介于 0-11 也就是说如果month为7 则为8月
     */
     getToday () {
-      let year = new Date().getFullYear()
-      let month = new Date().getMonth()
-      this.day = new Date().getDate()
+      let year = ''
+      let month = ''
+      if (this.defaultDate) {
+        year = new Date(this.defaultDate).getFullYear()
+        month = new Date(this.defaultDate).getMonth()
+        this.day = new Date(this.defaultDate).getDate()
+      } else {
+        year = new Date().getFullYear()
+        month = new Date().getMonth()
+        this.day = new Date().getDate()
+      }
       this.year = year
       this.month = month + 1
       this.getTimeInfo(year, month)
@@ -178,8 +182,8 @@ export default {
 <style scoped>
 .calendar {
   background-color: #fff;
-  border-top: 1px solid #F5F6FA;
-  border-bottom: 1px solid #F5F6FA;
+  border-top: 1px solid #f5f6fa;
+  border-bottom: 1px solid #f5f6fa;
   padding: 18px;
   position: relative;
 }
