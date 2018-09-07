@@ -34,7 +34,7 @@ export default {
       required: false
     },
     // 星期的类别 CN为中文 EN为英文
-    weeksType: {
+    weekNames: {
       type: String,
       required: false,
       default: 'CN'
@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     getWeeks () {
-      this.weeksType === 'CN'
+      this.weekNames === 'CN'
         ? this.weeks = ['日', '一', '二', '三', '四', '五', '六']
         : this.weeks = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat']
     },
@@ -97,7 +97,7 @@ export default {
       for (let i = 1; i <= currentDays; i++) {
         dataArray.push({
           timestamp: new Date(this.year, this.month - 1, i),
-          data: i,
+          data: (i + '').replace(/^(\d)$/, '0$1'),
           TPM: true // 是否本月 the present month
         })
       }
@@ -126,7 +126,7 @@ export default {
       for (let i = 0; i < nextDay; i++) {
         dataArray.push({
           timestamp: new Date(this.year, this.month, i + 1),
-          data: i + 1,
+          data: (i + 1 + '').replace(/^(\d)$/, '0$1'),
           TPM: false // 是否本月 the present month
         })
       }

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- <router-view/> -->
-    <calendar weeksType="CN" @dateChoose="getDate" defaultDate="Thu Sep 06 2018 00:00:00 GMT+0800 (中国标准时间)">
+    <calendar weekNames="CN" @dateChoose="getDate" defaultDate="Thu Sep 06 2018 00:00:00 GMT+0800 (中国标准时间)">
     </calendar>
   </div>
 </template>
