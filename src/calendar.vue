@@ -88,31 +88,6 @@ export default {
     this.getToday()
   },
   methods: {
-    // 切换到上个月
-    toPrev () {
-      this.day = ''
-      if (this.month === 1) {
-        this.year--
-        this.month = 12
-      } else {
-        this.month--
-      }
-      this.getTimeInfo(this.year, this.month - 1)
-    },
-    // 切换到下月
-    toNext () {
-      this.day = ''
-      if (this.month === 12) {
-        this.year++
-        this.month = 1
-      } else {
-        this.month++
-      }
-      this.getTimeInfo(this.year, this.month - 1)
-    },
-    callback () {
-      console.log(this.swiper.activeIndex)
-    },
     getWeeks () {
       this.weekNames === 'CN'
         ? this.weeks = ['日', '一', '二', '三', '四', '五', '六']
@@ -197,6 +172,31 @@ export default {
         })
       }
       return dataArray
+    },
+    // 切换到上个月
+    toPrev () {
+      this.day = ''
+      if (this.month === 1) {
+        this.year--
+        this.month = 12
+      } else {
+        this.month--
+      }
+      this.getTimeInfo(this.year, this.month - 1)
+    },
+    // 切换到下月
+    toNext () {
+      this.day = ''
+      if (this.month === 12) {
+        this.year++
+        this.month = 1
+      } else {
+        this.month++
+      }
+      this.getTimeInfo(this.year, this.month - 1)
+    },
+    callback () {
+      console.log(this.swiper.activeIndex)
     },
     // 判断是否是当天
     isToday (item) {
