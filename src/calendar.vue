@@ -7,28 +7,69 @@
       </slot>
     </div>
     <!-- <img src="@/resorce/img/file/calenda.png" alt="" width="100%;"> -->
-    <ul class="calendar-list">
-      <li class="calendar-date" v-for="item in weeks" :key="item">{{item}}</li>
-      <v-touch tag="li" v-for="(item,index) in dataArray" :key="index" class="calendar-date" :class="{'calendar-date-present': item.TPM}" @swipeleft="touchLeft" @swiperight="touchRight">
-        <div :class="{'calendar-data-on': isToday(item) }" @click="chooseDay(item)">{{item.data}}</div>
-      </v-touch>
-    </ul>
+    <div v-if="dataArray.length"> <!--等待数据加载完成再加载swiper-->
+      <swiper :options="swiperOption" ref="mySwiper" @slideChange="callback" @slidePrevTransitionEnd = "toPrev" @slideNextTransitionEnd = "toNext">
+        <!-- slides -->
+        <swiper-slide>
+          <ul class="calendar-list">
+            <li class="calendar-date" v-for="item in weeks" :key="item">{{item}}</li>
+            <li v-for="(item,index) in dataArray" :key="index" class="calendar-date" :class="{'calendar-date-present': item.TPM}">
+              <div :class="{'calendar-data-on': isToday(item) }" @click="chooseDay(item)">{{item.data}}</div>
+            </li>
+          </ul>
+        </swiper-slide>
+        <swiper-slide>
+          <ul class="calendar-list">
+            <li class="calendar-date" v-for="item in weeks" :key="item">{{item}}</li>
+            <li v-for="(item,index) in dataArray" :key="index" class="calendar-date" :class="{'calendar-date-present': item.TPM}">
+              <div :class="{'calendar-data-on': isToday(item) }" @click="chooseDay(item)">{{item.data}}</div>
+            </li>
+          </ul>
+        </swiper-slide>
+        <swiper-slide>
+          <ul class="calendar-list">
+            <li class="calendar-date" v-for="item in weeks" :key="item">{{item}}</li>
+            <li v-for="(item,index) in dataArray" :key="index" class="calendar-date" :class="{'calendar-date-present': item.TPM}">
+              <div :class="{'calendar-data-on': isToday(item) }" @click="chooseDay(item)">{{item.data}}</div>
+            </li>
+          </ul>
+        </swiper-slide>
+      </swiper>
+    </div>
+
   </div>
 </template>
 
 <script>
+import 'swiper/dist/css/swiper.css'
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
 export default {
+  components: {
+    swiper,
+    swiperSlide
+  },
+  computed: {
+    swiper () {
+      return this.$refs.mySwiper.swiper
+    }
+  },
   data () {
     return {
-      weeks: [],
+      weeks: ['日', '一', '二', '三', '四', '五', '六'],
       year: '',
       month: '',
       day: '',
-      dataArray: []
+      dataArray: [],
+      swiperOption: {
+        observer: true, // 修改swiper自己或子元素时，自动初始化swiper
+        observeParents: true, // 修改swiper的父元素时，自动初始化swiper
+        loop: true,
+        autoplay: false // 可选选项，自动滑动
+      }
     }
   },
   props: {
-    // 默认选中日期 可以用时间戳或者Date格式 不写为当日
+    // 默认选中日期 可以用时间戳或者Date格式 默认为当日
     defaultDate: {
       type: [String, Number],
       required: false
@@ -47,6 +88,31 @@ export default {
     this.getToday()
   },
   methods: {
+    // 切换到上个月
+    toPrev () {
+      this.day = ''
+      if (this.month === 1) {
+        this.year--
+        this.month = 12
+      } else {
+        this.month--
+      }
+      this.getTimeInfo(this.year, this.month - 1)
+    },
+    // 切换到下月
+    toNext () {
+      this.day = ''
+      if (this.month === 12) {
+        this.year++
+        this.month = 1
+      } else {
+        this.month++
+      }
+      this.getTimeInfo(this.year, this.month - 1)
+    },
+    callback () {
+      console.log(this.swiper.activeIndex)
+    },
     getWeeks () {
       this.weekNames === 'CN'
         ? this.weeks = ['日', '一', '二', '三', '四', '五', '六']
@@ -131,28 +197,6 @@ export default {
         })
       }
       return dataArray
-    },
-    // 左滑 显示下个月的数据
-    touchLeft () {
-      this.day = ''
-      if (this.month === 12) {
-        this.year++
-        this.month = 1
-      } else {
-        this.month++
-      }
-      this.getTimeInfo(this.year, this.month - 1)
-    },
-    // 右滑 显示上个月的数据
-    touchRight () {
-      this.day = ''
-      if (this.month === 1) {
-        this.year--
-        this.month = 12
-      } else {
-        this.month--
-      }
-      this.getTimeInfo(this.year, this.month - 1)
     },
     // 判断是否是当天
     isToday (item) {
