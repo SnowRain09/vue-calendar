@@ -200,7 +200,7 @@ export default {
     },
     // 判断是否是当天
     isToday (item) {
-      if (item.TPM && item.data === this.day) {
+      if (item.TPM && item.data === this.day.toString()) {
         return true
       } else {
         return false
@@ -236,6 +236,7 @@ export default {
   color: #333;
   text-align: left;
   padding-left: 18px;
+  padding-top: 10px;
 }
 .calendar-icon {
   width: 18px;
